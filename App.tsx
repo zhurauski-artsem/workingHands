@@ -5,18 +5,18 @@
  * @format
  */
 
-import { NewAppScreen } from '@react-native/new-app-screen';
 import {
+  ActivityIndicator,
   StatusBar,
-  StyleSheet,
   Text,
   useColorScheme,
-  View,
 } from 'react-native';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import Geolocation from 'react-native-geolocation-service';
+import { useEffect, useState } from 'react';
+import { LocationState } from './types';
+import { SafeAreaViewWrapper } from './src/components/SafeAreaViewWrapper';
+import { styles } from './styles';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -30,22 +30,28 @@ function App() {
 }
 
 function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
+  const [location, setLocation] = useState<LocationState>(null);
+
+  useEffect(() => {
+    Geolocation.getCurrentPosition(setLocation, error => {
+      console.log(error.code, error.message);
+      setLocation(undefined);
+    });
+  }, []);
 
   return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
-    </View>
+    <SafeAreaViewWrapper>
+      {location && (
+        <Text style={styles.centeredText}>{JSON.stringify(location)}</Text>
+      )}
+      {location === null && <ActivityIndicator />}
+      {location === undefined && (
+        <Text style={styles.centeredText}>
+          К сожалению, не удалось получить текущую геопозицию
+        </Text>
+      )}
+    </SafeAreaViewWrapper>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 export default App;
