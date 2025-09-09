@@ -7,16 +7,18 @@
 
 import {
   ActivityIndicator,
+  FlatList,
+  ScrollView,
   StatusBar,
   Text,
   useColorScheme,
 } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import Geolocation from 'react-native-geolocation-service';
-import { useEffect, useState } from 'react';
-import { LocationState } from './types';
 import { SafeAreaViewWrapper } from './src/components/SafeAreaViewWrapper';
 import { styles } from './styles';
+import Toast from 'react-native-toast-message';
+import { useGeolocation } from './src/components/hooks/useGeolocation';
+import { useShifts } from './src/components/hooks/useShifts';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -30,26 +32,32 @@ function App() {
 }
 
 function AppContent() {
-  const [location, setLocation] = useState<LocationState>(null);
+  const location = useGeolocation();
+  const shifts = useShifts(location);
 
-  useEffect(() => {
-    Geolocation.getCurrentPosition(setLocation, error => {
-      console.log(error.code, error.message);
-      setLocation(undefined);
-    });
-  }, []);
+  const showError = location === undefined;
+  const showLoader = shifts === null && !showError;
 
   return (
     <SafeAreaViewWrapper>
-      {location && (
-        <Text style={styles.centeredText}>{JSON.stringify(location)}</Text>
+      {shifts && (
+        <ScrollView style={styles.container}>
+          <FlatList
+            data={shifts}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => (
+              <Text style={styles.centeredText}>{item.companyName}</Text>
+            )}
+          />
+        </ScrollView>
       )}
-      {location === null && <ActivityIndicator />}
-      {location === undefined && (
+      {showLoader && <ActivityIndicator />}
+      {showError && (
         <Text style={styles.centeredText}>
           К сожалению, не удалось получить текущую геопозицию
         </Text>
       )}
+      <Toast />
     </SafeAreaViewWrapper>
   );
 }
