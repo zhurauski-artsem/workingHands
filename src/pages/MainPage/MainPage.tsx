@@ -21,7 +21,7 @@ export const MainPage: React.FC<MainPageProps> = ({ navigation }) => {
     <SafeAreaViewWrapper>
       {shifts && (
         <>
-          <Text style={styles.title}>Доступных смены:</Text>
+          <Text style={styles.title}>Доступные смены:</Text>
           <FlatList
             data={shifts}
             keyExtractor={item => item.id}
