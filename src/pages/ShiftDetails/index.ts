@@ -1,0 +1,1 @@
+export { ShiftDetails } from './ShiftDetails';

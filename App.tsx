@@ -1,64 +1,35 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import {
-  ActivityIndicator,
-  FlatList,
-  ScrollView,
-  StatusBar,
-  Text,
-  useColorScheme,
-} from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { SafeAreaViewWrapper } from './src/components/SafeAreaViewWrapper';
-import { styles } from './styles';
 import Toast from 'react-native-toast-message';
-import { useGeolocation } from './src/components/hooks/useGeolocation';
-import { useShifts } from './src/components/hooks/useShifts';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { MainPage } from './src/pages/MainPage/MainPage';
+import { RootStackParamList } from './src/models';
+import { ShiftDetails } from './src/pages/ShiftDetails';
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
-    </SafeAreaProvider>
-  );
-}
-
-function AppContent() {
-  const location = useGeolocation();
-  const shifts = useShifts(location);
-
-  const showError = location === undefined;
-  const showLoader = shifts === null && !showError;
-
-  return (
-    <SafeAreaViewWrapper>
-      {shifts && (
-        <ScrollView style={styles.container}>
-          <FlatList
-            data={shifts}
-            keyExtractor={item => item.id}
-            renderItem={({ item }) => (
-              <Text style={styles.centeredText}>{item.companyName}</Text>
-            )}
+      <NavigationContainer>
+        <Toast />
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Home"
+            component={MainPage}
+            options={{ headerShown: false, headerBackTitle: 'Назад' }}
           />
-        </ScrollView>
-      )}
-      {showLoader && <ActivityIndicator />}
-      {showError && (
-        <Text style={styles.centeredText}>
-          К сожалению, не удалось получить текущую геопозицию
-        </Text>
-      )}
-      <Toast />
-    </SafeAreaViewWrapper>
+          <Stack.Screen
+            name="ShiftDetails"
+            component={ShiftDetails}
+            options={({ route }) => ({
+              headerBackTitle: 'Назад',
+              headerTitle: route.params.shift.companyName ?? 'Описание смены',
+            })}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
 

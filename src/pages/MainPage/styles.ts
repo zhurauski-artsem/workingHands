@@ -4,5 +4,9 @@ export const styles = StyleSheet.create({
   centeredText: {
     textAlign: 'center',
   },
-  container: { flex: 1, padding: 16 },
+  title: {
+    fontSize: 22,
+    fontWeight: 600,
+    textAlign: 'center',
+  },
 });

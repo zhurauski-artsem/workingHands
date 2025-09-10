@@ -13,12 +13,8 @@ export const SafeAreaViewWrapper: React.FC<SafeAreaViewWrapperProps> = ({
 
   const containerStyle = StyleSheet.create({
     container: {
-      flex: 1,
-      textAlign: 'center',
-      alignItems: 'center',
       paddingTop: insets.top,
       paddingLeft: insets.left,
-      justifyContent: 'center',
       paddingRight: insets.right,
       paddingBottom: insets.bottom,
     },

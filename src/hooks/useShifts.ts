@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
-import { getShifts } from '../../api/shifts';
 import Toast from 'react-native-toast-message';
-import { LocationState, Shift } from '../../models';
+import { LocationState, Shift } from '../models';
+import { getShifts } from '../api/shifts';
 
 export const useShifts = (location?: LocationState) => {
   const [shifts, setShifts] = useState<Shift[] | null>(null);
-
+  console.log('shifts', shifts);
   useEffect(() => {
     if (location) {
-      getShifts(location.coords.latitude, location.coords.longitude)
+      getShifts(55.751244, 37.618423)
         .then(locationShifts => {
           if (locationShifts.length === 0) {
             Toast.show({
