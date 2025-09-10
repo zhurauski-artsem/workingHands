@@ -5,7 +5,7 @@ import { getShifts } from '../api/shifts';
 
 export const useShifts = (location?: LocationState) => {
   const [shifts, setShifts] = useState<Shift[] | null>(null);
-  console.log('shifts', shifts);
+
   useEffect(() => {
     if (location) {
       getShifts(55.751244, 37.618423)
