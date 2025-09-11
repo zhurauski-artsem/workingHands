@@ -8,7 +8,7 @@ export const useShifts = (location?: LocationState) => {
 
   useEffect(() => {
     if (location) {
-      getShifts(55.751244, 37.618423)
+      getShifts(location.coords.latitude, location.coords.longitude)
         .then(locationShifts => {
           if (locationShifts.length === 0) {
             Toast.show({
